@@ -1,26 +1,24 @@
 package com.codingame.game;
 
 public class Action {
-    public final int row;
-    public final int col;
+    public final int num;
     public Player player;
-    
-    public Action(Player player, int row, int col) {
+
+    public Action(Player player, int num) {
         this.player = player;
-        this.row = row;
-        this.col = col;
+        this.num = num;
     }
-    
+
     @Override
     public String toString() {
-        return row + " " + col;
+        return String.valueOf(num);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Action) {
             Action other = (Action) obj;
-            return col == other.col && row == other.row;
+            return num == other.num;
         } else {
             return false;
         }

@@ -2,31 +2,25 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Player2 {
-    static class Action {
-        int row, col;
-        public Action(int row, int col) {
-            this.row = row;
-            this.col = col;
-        }
-    }
-    
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Random random = new Random(0);
 
         while (true) {
-            int opponentRow = in.nextInt();
-            int opponentCol = in.nextInt();
-            int validActionCount = in.nextInt();
-
-            int row = 0;
-            int col = 0;
-            for (int i = 0; i < validActionCount; i++) {
-                row = in.nextInt();
-                col = in.nextInt();
+            int board[] = new int[12];
+            for (int i = 0; i < 12; i++) {
+                board[i] = in.nextInt();
+                System.err.print(board[i] + " ");
             }
-            
-            System.out.println(String.format("%d %d", row, col));
+
+            System.err.println("");
+
+            int action = random.nextInt(6);
+            while (board[action] == 0) {
+                action = random.nextInt(6);
+            }
+           
+            System.out.println(String.format("%d", action));
         }
     }
 }
