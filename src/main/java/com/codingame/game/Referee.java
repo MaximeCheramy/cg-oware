@@ -214,6 +214,8 @@ public class Referee extends AbstractReferee {
             // Picking
             int seed = board[action.num];
             board[action.num] = 0;
+            removeAllSeeds(action.num);
+            graphicEntityModule.commitWorldState(0);
 
             // Sowing
             List<Integer> toAdd = new ArrayList<>();
@@ -230,10 +232,7 @@ public class Referee extends AbstractReferee {
             List<Integer> toRemove = new ArrayList<>();
             int current = (action.num + seed + skip) % 12;
 
-            int[] boardBackup = board.clone();
-
             while ((current < 6 && player.getIndex() == 1 || current >= 6 && player.getIndex() == 0) && (board[current] == 2 || board[current] == 3)) {
-                board[current] = 0;
                 toRemove.add(current);
                 current = (current + 11) % 12;
             }
@@ -241,28 +240,25 @@ public class Referee extends AbstractReferee {
             boolean isGrandSlam = true;
             int start = player.getIndex() == 0 ? 6 : 0;
             for (int i = 0; i < 6; i++) {
-                if (board[start + i] > 0) {
+                if (!toRemove.contains(start + i) && board[start + i] > 0) {
                     isGrandSlam = false;
                     break;
                 }
             }
+
             if (isGrandSlam) {
-                // revert last action
+                // Revert capturing
                 toRemove.clear();
-                board[action.num] = seed;
             } else {
-                removeAllSeeds(action.num);
-                graphicEntityModule.commitWorldState(0);
-    
                 toRemove.forEach(i -> {
-                    int captured = boardBackup[i];
+                    int captured = board[i];
                     player.increaseScore(captured);
                     gameManager.addTooltip(player, String.format("Captured %d (at %d)", captured, i));
+                    board[i] = 0;
                 });
             }
 
             // Animations
-
 
             double step = 1.0 / (10 + toAdd.size() + toRemove.size());
             double t = step * 2;
