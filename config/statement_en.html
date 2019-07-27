@@ -1,21 +1,75 @@
-<div class="statement-body"> 
-   <!-- GOAL --> 
-   <div class="statement-section statement-goal"> 
-     <h2> 
-       <span class="icon icon-goal">&nbsp;</span> 
-       <span>The Goal</span> 
-     </h2> 
-     <div class="statement-goal-content"> 
-      Oware, also known as Awalé, is a turn-based game, where the objective is to capture the more seeds than your opponent. We're playing the Abapa variant here.
-     </div>
-   </div> 
-   <!-- RULES --> 
-   <div class="statement-section statement-rules"> 
-     <h2> 
-       <span class="icon icon-rules">&nbsp;</span> 
-       <span>Rules</span> 
-     </h2> 
-     <div><div class="statement-rules-content">TODO (see https://en.wikipedia.org/wiki/Oware for now). The input is the number of seeds in each house, starting from the player's side.</div> 
-     </div> 
-   </div>
+<div class="statement-body">
+  <!-- GOAL -->
+  <div class="statement-section statement-goal">
+    <h2>
+      <span class="icon icon-goal">&nbsp;</span>
+      <span>The Goal</span>
+    </h2>
+    <div class="statement-goal-content">
+      Oware, also known as Awalé, is a turn-based game, where the objective is to capture more seeds than your opponent.
+      We're playing the Abapa variant here.
+    </div>
+  </div>
+  <!-- RULES -->
+  <div class="statement-section statement-rules">
+    <h2>
+      <span class="icon icon-rules">&nbsp;</span>
+      <span>Rules</span>
+    </h2>
+    <div>
+      <div class="statement-rules-content">
+        <p>The game is played turn by turn with two players. Each player controls one side of the board. Each side of
+          the board contains 6 <b>houses</b>. The game begins with <const>4</const> seeds in each house.
+        </p>
+        <p><b>Sowing</b></p>
+        <p>
+          Players take turns moving the seeds. On a turn, a player chooses one of the six houses under their control.
+          The player removes all seeds from that house, and distributes them, dropping <b>one in each house</b>
+          counter-clockwise from this house, in a process called <b>sowing</b>. Seeds are not distributed into the house
+          drawn from. The starting house is always left empty; if it contained 12 (or more) seeds, it is skipped, and
+          the twelfth seed is placed in the next house. </p>
+        <p><b>Capturing</b></p>
+        <p>
+          In Oware Abapa, <b>capturing</b> occurs only when a player brings the count of an opponent's house to <b>two
+            or three seeds</b> with the final seed he sowed in that turn. This always captures the seeds in the
+          corresponding house, and possibly more: If the previous-to-last seed also brought an opponent's house to two
+          or three, these are captured as well, and so on until a house is reached which does not contain two or three
+          seeds or does not belong to the opponent.
+        </p>
+        <p>The captured seeds are removed from play and the player scores that many points.</p>
+
+        <p>
+          However, if a move would capture all of an opponent's seeds, the capture is forfeited since this
+          would prevent the opponent from continuing the game, and the seeds are instead left on the board.
+          <br>
+          In fact, one must always make a move that allows the opponent to continue playing. If an opponent's houses are
+          all empty, the current player must make a move that gives the opponent seeds. If no such move is possible, the current player
+          captures all seeds in his/her own territory, ending the game.
+        </p>
+
+      </div>
+    </div>
+  </div>
+  <!-- Victory conditions -->
+  <div class="statement-victory-conditions">
+    <div class="icon victory"></div>
+    <div class="blk">
+      <div class="title">Victory Conditions</div>
+      <div class="text">
+        You have captured <const>25</const> or more seeds before the opponent.
+      </div>
+    </div>
+  </div>
+  <!-- Lose conditions -->
+  <div class="statement-lose-conditions">
+    <div class="icon lose"></div>
+    <div class="blk">
+      <div class="title">Defeat Conditions</div>
+      <div class="text">
+        <ul style="padding-top:0; padding-bottom: 0;">
+          <li>Your program does not provide a valid command in time.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
