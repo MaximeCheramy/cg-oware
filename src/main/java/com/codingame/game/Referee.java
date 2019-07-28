@@ -8,6 +8,7 @@ import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.MultiplayerGameManager;
+import com.codingame.gameengine.module.entities.Curve;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Sprite;
 import com.codingame.gameengine.module.entities.Text;
@@ -58,17 +59,37 @@ public class Referee extends AbstractReferee {
         gameManager.setMaxTurns(200);
     }
 
-    private void addSeed(int i) {
+    private void addSeed(int i, double tStart, double tEnd) {
         Sprite seed = seedPool.remove(0);
         seed.setX(computeHouseX(i) + seedPositionX[seeds.get(i).size() % 26])
-                .setY(computeHouseY(i) + seedPositionY[seeds.get(i).size() % 26]).setVisible(true);
+            .setY(computeHouseY(i) + seedPositionY[seeds.get(i).size() % 26])
+            .setScale(5)
+            .setVisible(true)
+            .setAlpha(0);
+        graphicEntityModule.commitEntityState(tStart, seed);
+        seed
+            .setAlpha(1)
+            .setScale(1, Curve.EASE_IN_AND_OUT);
         seeds.get(i).add(seed);
+        graphicEntityModule.commitEntityState(tEnd, seed);
     }
 
-    private void removeAllSeeds(int i) {
+    private void pickAllSeeds(int i, double tStart, double tEnd) {
         seeds.get(i).forEach(seedToRemove -> {
-            seedToRemove.setVisible(false);
+            graphicEntityModule.commitEntityState(tStart, seedToRemove);
+            seedToRemove.setAlpha(0);
             seedPool.add(seedToRemove);
+            graphicEntityModule.commitEntityState(tEnd, seedToRemove);
+        });
+        seeds.get(i).clear();
+    }
+
+    private void captureAllSeeds(int i, Player player, double tStart, double tEnd) {
+        seeds.get(i).forEach(seedToRemove -> {
+            graphicEntityModule.commitEntityState(tStart, seedToRemove);
+            seedToRemove.setX(player.scoreText.getX()).setY(player.scoreText.getY()).setAlpha(0);
+            seedPool.add(seedToRemove);
+            graphicEntityModule.commitEntityState(tEnd, seedToRemove);
         });
         seeds.get(i).clear();
     }
@@ -130,8 +151,10 @@ public class Referee extends AbstractReferee {
             player.scoreText = graphicEntityModule.createText("Score: 0").setFontSize(40).setFillColor(0xffffff)
                     .setX(scoreX).setY(scoreY).setAnchor(player.getIndex());
 
-            player.hud = graphicEntityModule.createGroup(text, avatar, player.scoreText);
-            player.hud.setAlpha(0.2);
+            player.playing = graphicEntityModule.createCircle()
+                    .setFillColor(0x990000).setRadius(10).setX(x + 45).setY(y - 40).setAlpha(0).setZIndex(100);
+
+            player.hud = graphicEntityModule.createGroup(text, avatar, player.scoreText, player.playing);
         }
     }
 
@@ -183,19 +206,17 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void gameTurn(int turn) {
-        Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
+        Player player = gameManager.getPlayer((turn - 1) % gameManager.getPlayerCount());
 
         List<Action> validActions = computeValidActions(player);
         if (validActions.isEmpty()) {
             for (int i = 0; i < 12; i++) {
                 player.increaseScore(board[i]);
-                removeAllSeeds(i);
+                captureAllSeeds(i, player, 0, 1);
                 endGame();
             }
             return;
         }
-
-        player.hud.setAlpha(1);
 
         sendInputs(player);
         player.execute();
@@ -214,8 +235,6 @@ public class Referee extends AbstractReferee {
             // Picking
             int seed = board[action.num];
             board[action.num] = 0;
-            removeAllSeeds(action.num);
-            graphicEntityModule.commitWorldState(0);
 
             // Sowing
             List<Integer> toAdd = new ArrayList<>();
@@ -259,23 +278,31 @@ public class Referee extends AbstractReferee {
             }
 
             // Animations
+            double t = 0;
+            int duration = 5 + toAdd.size() + toRemove.size() * 2;
+            double step = 1.0 / duration;
+            double epsilon = 0.0001;
+            gameManager.setFrameDuration(300 * duration);
 
-            double step = 1.0 / (10 + toAdd.size() + toRemove.size());
-            double t = step * 2;
+            player.playing.setAlpha(1, Curve.NONE);
+            graphicEntityModule.commitEntityState(0, player.playing);
+
+            // Picking
+            pickAllSeeds(action.num, t, t + 2 * step - epsilon);
+            t += 2 * step;
+
+            // Sowing
             for (int i : toAdd) {
-                addSeed(i);
-                graphicEntityModule.commitWorldState(t);
+                addSeed(i, t, t + step - epsilon);
                 t += step;
             }
+
+            // Capturing
             t += step * 2;
             for (int i : toRemove) {
-                removeAllSeeds(i);
-                graphicEntityModule.commitWorldState(t);
-
-                t += step;
+                captureAllSeeds(i, player, t, t + step * 2 - epsilon);
+                t += step * 2;
             }
-
-            gameManager.setFrameDuration(400 * (10 + toAdd.size() + toRemove.size()));
 
             // Check if win
             if (player.getScore() > 24) {
@@ -296,7 +323,8 @@ public class Referee extends AbstractReferee {
             endGame();
         }
 
-        player.hud.setAlpha(0.2);
+        player.playing.setAlpha(0, Curve.NONE);
+        graphicEntityModule.commitEntityState(1, player.hud);
     }
 
     private void endGame() {

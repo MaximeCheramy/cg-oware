@@ -1,12 +1,14 @@
 package com.codingame.game;
 
 import com.codingame.gameengine.core.AbstractMultiplayerPlayer;
+import com.codingame.gameengine.module.entities.Circle;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Text;
 
 public class Player extends AbstractMultiplayerPlayer {
     public Group hud;
 	public Text scoreText;
+	public Circle playing;
     
     @Override
     public int getExpectedOutputLines() {
