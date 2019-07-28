@@ -55,7 +55,7 @@ public class Referee extends AbstractReferee {
 
         gameManager.setFrameDuration(2000);
 
-        gameManager.setMaxTurns(100);
+        gameManager.setMaxTurns(200);
     }
 
     private void addSeed(int i) {
