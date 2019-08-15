@@ -1,0 +1,95 @@
+<div class="statement-body">
+  <!-- GOAL -->
+  <div class="statement-section statement-goal">
+    <h2>
+      <span class="icon icon-goal">&nbsp;</span>
+      <span>Objectif</span>
+    </h2>
+    <div class="statement-goal-content">
+      Oware, aussi connu sous le nom de Awalé, est un jeu tour par tour dont l'objectif est de capturer plus de graines que votre adversaire.
+      Ici, nous jouons à la variante Abapa.
+    </div>
+  </div>
+  <!-- RULES -->
+  <div class="statement-section statement-rules">
+    <h2>
+      <span class="icon icon-rules">&nbsp;</span>
+      <span>Règles</span>
+    </h2>
+    <div>
+      <div class="statement-rules-content">
+        <p>Le jeu se déroule en tour par tour avec deux joueurs. Chaque joueur contrôle un côté du plateau. Chaque côté du plateau contient 6 <b>maisons</b>.
+          Le jeu commence avec <const>4</const> graines dans chaque maison.
+        </p>
+        <p><b>Semis</b></p>
+        <p>
+          Les joueurs déplacent des graines à chaque tour. Pendant son tour, un joueur choisit l'une de ses six maisons sous son contrôle.
+          Le joueur retire toutes les graines de cette maison et les distribue une à une dans les maisons suivantes dans le sens anti-horaire. C'est ce qu'on appelle le <b>semis</b>.
+          Les graines ne sont pas distribués dans la maison d'où elles proviennent. La maison de départ est donc laissée vide; la douzième graine est placée dans la maison suivante. </p>
+        <p><b>Prise</b></p>
+        <p>
+          Au Oware Abapa, <b>une prise</b> est réalisée lorsqu'un joueur amène le nombre de graines dans une maison adverse à <b>deux</b> ou <b>trois</b> 
+          à l'aide de la dernière graine semée dans le tour. Cela capture automatiquement les graines de cette maison, mais potentiellement d'autres :
+          Si la maison précédente à celle capturée contient deux ou trois graines, elle est aussi capturée, et ainsi de suite jusqu'à ce qu'une maison contiennent un nombre de graines différent de deux ou trois,
+          ou qu'elle n'appartienne pas à l'adversaire.
+        </p>
+        <p>Les graines capturées sont enlevées du jeu et le joueur remporte autant de points que de graines capturées.</p>
+
+        <p>
+          Attention, si une action provoque la prise de l'ensemble des graines de l'adversaire, l'action de capture est entièrement annulée car cela empêcherait l'adversaire de jouer au prochain tour.
+          Les graines sont laissées en jeu.
+          <br>
+          En fait, un joueur doit toujours faire une action qui permet à son adversaire de continuer à jouer. Si toutes les maisons d'un adversaire sont vides, le joueur courant doit faire une action qui permettra à l'adversaire de jouer.
+          Si une telle action n'est pas possible, alors le joueur courant remporte toutes les graines du jeu et la partie se termine.
+        </p>
+
+      </div>
+    </div>
+  </div>
+  <!-- Victory conditions -->
+  <div class="statement-victory-conditions">
+    <div class="icon victory"></div>
+    <div class="blk">
+      <div class="title">Conditions de victoire</div>
+      <div class="text">
+        Vous avez capturé au moins <const>25</const> graines avant votre adversaire. Si le jeu dépasse 200 tours, le gagnant est le joueur qui a capturé le plus de graines.
+      </div>
+    </div>
+  </div>
+  <!-- Lose conditions -->
+  <div class="statement-lose-conditions">
+    <div class="icon lose"></div>
+    <div class="blk">
+      <div class="title">Conditions de défaite</div>
+      <div class="text">
+        Votre programme n'a pas donné une commande valide dans les temps.
+      </div>
+    </div>
+  </div>
+
+      <!-- PROTOCOL --> 
+      <div class="statement-section statement-protocol"> 
+        <h2> 
+          <span class="icon icon-protocol">&nbsp;</span> 
+          <span>Entrées</span> 
+        </h2> 
+        <!-- Protocol block --> 
+        <div class="blk"> 
+  <div class="title">Entrée pour un tour de jeu</div> 
+          <div class="text"><span class="statement-lineno">Ligne 1:</span> 12 entiers séparés par des espaces : le nombre de graines dans chaque maison. Les 6 premières valeurs correspondent à vos maisons.</div>
+        </div> 
+ 
+        <!-- Protocol block --> 
+        <div class="blk"> 
+  <div class="title">Sortie pour un tour de jeu</div> 
+          <div class="text"><span class="statement-lineno">Ligne 1:</span> 1 entier entre 0 et 5 (inclus): la maison jouée.</div> 
+        </div>
+
+        <!-- Protocol block -->
+        <div class="blk">
+          <div class="title">Contraintes</div>
+          <div class="text">Temps de réponse pour le premier tour ≤ 1000ms <br>
+              Temps de réponse pour un tour ≤ 50ms</div>
+        </div>
+      </div>
+</div>
