@@ -1,5 +1,7 @@
 import { GraphicEntityModule } from './entity-module/GraphicEntityModule.js';
 
+export const stepByStepAnimateSpeed = 1;
+
 export const demo = {
   playerCount: 2,
   logo: 'logo.png',
