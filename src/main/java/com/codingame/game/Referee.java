@@ -25,6 +25,7 @@ public class Referee extends AbstractReferee {
     private List<Sprite> seedPool;
     private int[] seedPositionX;
     private int[] seedPositionY;
+    private Sprite hand;
 
     @Override
     public void init() {
@@ -53,6 +54,8 @@ public class Referee extends AbstractReferee {
         drawBackground();
         drawHud();
         drawBoard();
+
+        hand = graphicEntityModule.createSprite().setImage("hand.png").setAnchor(0.5).setVisible(false);
 
         gameManager.setFrameDuration(2000);
 
@@ -114,7 +117,7 @@ public class Referee extends AbstractReferee {
     }
 
     private int computeHouseY(int i) {
-        return i < 6 ? 690 : 410;
+        return i < 6 ? 680 : 405;
     }
 
     private int computeHouseX(int i) {
@@ -151,10 +154,7 @@ public class Referee extends AbstractReferee {
             player.scoreText = graphicEntityModule.createText("Score: 0").setFontSize(40).setFillColor(0xffffff)
                     .setX(scoreX).setY(scoreY).setAnchor(player.getIndex());
 
-            player.playing = graphicEntityModule.createCircle()
-                    .setFillColor(0x990000).setRadius(10).setX(x + 45).setY(y - 40).setAlpha(0).setZIndex(100);
-
-            player.hud = graphicEntityModule.createGroup(text, avatar, player.scoreText, player.playing);
+            player.hud = graphicEntityModule.createGroup(text, avatar, player.scoreText);
         }
     }
 
@@ -227,6 +227,12 @@ public class Referee extends AbstractReferee {
             gameManager.addToGameSummary(
                     String.format("Player %s played (%d)", action.player.getNicknameToken(), action.num));
 
+            hand.setX(computeHouseX(action.num))
+                .setY(computeHouseY(action.num) + (player.getIndex() == 0 ? 180 : -180))
+                .setRotation(player.getIndex() == 0 ? 0 : Math.PI)
+                .setTint(player.getColorToken(), Curve.NONE)
+                .setVisible(true);
+            graphicEntityModule.commitEntityState(0, hand);
 
             if (!validActions.contains(action)) {
                 throw new InvalidAction("Invalid action.");
@@ -284,9 +290,6 @@ public class Referee extends AbstractReferee {
             double epsilon = 0.0001;
             gameManager.setFrameDuration(300 * duration);
 
-            player.playing.setAlpha(1, Curve.NONE);
-            graphicEntityModule.commitEntityState(0, player.playing);
-
             // Picking
             pickAllSeeds(action.num, t, t + 2 * step - epsilon);
             t += 2 * step;
@@ -323,7 +326,6 @@ public class Referee extends AbstractReferee {
             endGame();
         }
 
-        player.playing.setAlpha(0, Curve.NONE);
         graphicEntityModule.commitEntityState(1, player.hud);
     }
 
