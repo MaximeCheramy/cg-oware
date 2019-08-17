@@ -23,8 +23,8 @@ public class Referee extends AbstractReferee {
     private int[] board;
     private List<List<Sprite>> seeds;
     private List<Sprite> seedPool;
-    private int[] seedPositionX;
-    private int[] seedPositionY;
+    private double[] seedPositionO;
+    private int[] seedPositionR;
     private Sprite hand;
 
     @Override
@@ -35,19 +35,19 @@ public class Referee extends AbstractReferee {
         }
 
         // Generate possible seed positions:
-        seedPositionX = new int[26];
-        seedPositionY = new int[26];
-        seedPositionX[0] = seedPositionY[1] = 0;
+        seedPositionO = new double[26];
+        seedPositionR = new int[26];
+        seedPositionO[0] = seedPositionR[0] = 0;
         int v = 0;
         for (int i = 1; i < 7; i++) {
-            seedPositionX[i] = (int) Math.round(40 * Math.cos(v));
-            seedPositionY[i] = (int) Math.round(40 * Math.sin(v));
+            seedPositionO[i] = v;
+            seedPositionR[i] = 40;
             v += i % 2 == 0 ? 3 : -1;
         }
         v = 1;
         for (int i = 7; i < 26; i++) {
-            seedPositionX[i] = (int) Math.round(75 * Math.cos(0.33 * v));
-            seedPositionY[i] = (int) Math.round(75 * Math.sin(0.33 * v));
+            seedPositionO[i] = v / 3.0;
+            seedPositionR[i] = 75;
             v += i % 2 == 0 ? 9 : -3;
         }
 
@@ -64,8 +64,8 @@ public class Referee extends AbstractReferee {
 
     private void addSeed(int i, double tStart, double tEnd) {
         Sprite seed = seedPool.remove(0);
-        seed.setX(computeHouseX(i) + seedPositionX[seeds.get(i).size() % 26])
-            .setY(computeHouseY(i) + seedPositionY[seeds.get(i).size() % 26])
+        seed.setX(computeSeedX(i, seeds.get(i).size()))
+            .setY(computeSeedY(i, seeds.get(i).size()))
             .setScale(5)
             .setVisible(true)
             .setAlpha(0);
@@ -108,12 +108,23 @@ public class Referee extends AbstractReferee {
             seeds.add(new ArrayList<Sprite>());
             for (int j = 0; j < board[i]; j++) {
                 Sprite seed = graphicEntityModule.createSprite()
-                        .setImage(String.format("seed%d.png", random.nextInt(5))).setAnchor(.5)
-                        .setRotation((i + 1) * (j + 1)).setScale(0.6 + Math.pow(0.5, 1 + Math.random()))
-                        .setX(computeHouseX(i) + seedPositionX[j % 26]).setY(computeHouseY(i) + seedPositionY[j % 26]);
+                        .setImage(String.format("seed%d.png", random.nextInt(5)))
+                        .setAnchor(.5)
+                        .setRotation((i + 1) * (j + 1))
+                        .setScale(0.6 + Math.pow(0.5, 1 + Math.random()))
+                        .setX(computeSeedX(i, j))
+                        .setY(computeSeedY(i, j));
                 seeds.get(i).add(seed);
             }
         }
+    }
+
+    private int computeSeedX(int house, int n) {
+        return (int)Math.round(computeHouseX(house) + seedPositionR[n % 26] * Math.cos(house + seedPositionO[n % 26]));
+    }
+
+    private int computeSeedY(int house, int n) {
+        return (int)Math.round(computeHouseY(house) + seedPositionR[n % 26] * Math.sin(house + seedPositionO[n % 26]));
     }
 
     private int computeHouseY(int i) {
